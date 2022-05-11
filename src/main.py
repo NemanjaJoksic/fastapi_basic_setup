@@ -23,6 +23,18 @@ def create_basic_authentication_handler():
 
     return authenticate_basic
 
+
+def create_api_key_authentication_handler():
+    api_key_header = fastapi.security.APIKeyHeader(name="api_key")
+
+    def authenticate_api_key(api_key: str = fastapi.Depends(api_key_header)):
+        correct_api_key = api_key == "my_api_key"
+        if not correct_api_key:
+            raise InvalidApiKey
+        return "test_user"
+
+    return authenticate_api_key
+
 def create_oauth2_token_authentication_handler():
     # available flows: OAuth2PasswordBearer and OAuth2AuthorizationCodeBearer
     oauth2_scheme = fastapi.security.OAuth2PasswordBearer(tokenUrl="token")
@@ -42,6 +54,9 @@ def create_authentication_handler(security_type: str):
     elif security_type == "basic":
         logging.info("basic authentication handler created")
         return create_basic_authentication_handler()
+    elif security_type == "api_key":
+        logging.info("api_key authentication handler created")
+        return create_api_key_authentication_handler()
     elif security_type == "token":
         logging.info("token based authentication handler created")
         return create_oauth2_token_authentication_handler()
@@ -52,7 +67,7 @@ def create_authentication_handler(security_type: str):
 #=======================================================================================================================
 # APIs
 #=======================================================================================================================
-authentication_handler = create_authentication_handler("token")
+authentication_handler = create_authentication_handler("api_key")
 
 @app.get("/hello")
 def hello(name: str = None):
@@ -83,6 +98,13 @@ class InvalidBasicCredentials(fastapi.HTTPException):
         super().__init__(
             status_code=401,
             detail="Invalid credentials"
+        )
+
+class InvalidApiKey(fastapi.HTTPException):
+    def __init__(self):
+        super().__init__(
+            status_code=401,
+            detail="Invalid api_key"
         )
 
 class InvalidToken(fastapi.HTTPException):

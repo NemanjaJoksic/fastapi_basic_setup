@@ -25,7 +25,7 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:8000/hello/me",
+			"name": "http://localhost:8000/hello/me OAuth2",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -74,6 +74,32 @@
 							"key": "name",
 							"value": "Pera"
 						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8000/hello/me API KEY",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "api_key",
+						"value": "my_api_key",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8000/hello/me",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"hello",
+						"me"
 					]
 				}
 			},
